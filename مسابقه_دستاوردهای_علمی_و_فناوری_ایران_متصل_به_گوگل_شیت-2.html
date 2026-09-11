@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مسابقه دستاوردهای علمی و فناوری ایران</title>
+<style>
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:Tahoma,Arial,sans-serif;
+    background:linear-gradient(135deg,#eef7f1,#f8fbff);
+    color:#243238;
+    line-height:1.9;
+  }
+  .wrap{max-width:900px;margin:auto;padding:18px}
+  .card{
+    background:#fff;border-radius:22px;padding:24px;
+    box-shadow:0 8px 30px rgba(0,0,0,.08);margin:16px 0;
+  }
+  h1,h2,h3{margin-top:0}
+  h1{font-size:26px;text-align:center;color:#17633f}
+  .intro{text-align:center;color:#52636a}
+  .badge{
+    display:inline-block;background:#e7f5ed;color:#17633f;
+    border-radius:999px;padding:5px 12px;margin:3px;font-size:13px
+  }
+  .progress{height:10px;background:#e6ece9;border-radius:20px;overflow:hidden;margin:15px 0}
+  .bar{height:100%;width:0;background:#25885a;transition:.3s}
+  .question-title{font-size:20px;font-weight:bold;margin-bottom:14px}
+  .option{
+    display:block;width:100%;text-align:right;border:2px solid #e1e8e5;
+    background:#fff;border-radius:14px;padding:13px 15px;margin:10px 0;
+    cursor:pointer;font-size:16px;transition:.2s;
+  }
+  .option:hover{border-color:#70ae8f;background:#f6fbf8}
+  .option.correct{border-color:#2d9a62;background:#e9f8ef}
+  .option.wrong{border-color:#d65c5c;background:#fff0f0}
+  .option.disabled{cursor:default}
+  .letter{font-weight:bold;margin-left:7px}
+  .feedback{
+    display:none;border-radius:15px;padding:16px;margin-top:16px;
+    border-right:5px solid #25885a;background:#f3faf6
+  }
+  .feedback.wrong{border-right-color:#c94d4d;background:#fff6f6}
+  .feedback strong{display:block;margin-bottom:6px}
+  .next{
+    display:none;margin-top:16px;border:0;border-radius:13px;padding:12px 22px;
+    background:#17633f;color:white;font-size:16px;cursor:pointer
+  }
+  .next:hover{background:#0e4e30}
+  .scorebox{text-align:center}
+  .score{font-size:42px;font-weight:bold;color:#17633f}
+  .level{font-size:22px;font-weight:bold;margin:8px}
+  .meter{height:18px;background:#e6ece9;border-radius:20px;overflow:hidden;margin:15px 0}
+  .meter span{display:block;height:100%;width:0;background:#25885a}
+  .hidden{display:none}
+  .restart{border:0;background:#17633f;color:white;border-radius:13px;padding:12px 24px;font-size:16px;cursor:pointer}
+  .sources{font-size:13px;color:#53636a}
+  .sources a{color:#17633f;word-break:break-word}
+  .small{font-size:13px;color:#66757b}
+  ul{padding-right:22px}
+  @media(max-width:600px){
+    .wrap{padding:10px}.card{padding:17px;border-radius:17px}
+    h1{font-size:21px}.question-title{font-size:18px}
+    .option{font-size:15px}
+  }
+</style>
+
+<style>
+body{
+  background:
+    radial-gradient(circle at 10% 10%, rgba(37,136,90,.10), transparent 28%),
+    radial-gradient(circle at 90% 20%, rgba(37,100,160,.08), transparent 30%),
+    linear-gradient(135deg,#f2faf5 0%,#f7fbff 55%,#eef7f1 100%);
+}
+.wrap{max-width:860px;padding:14px}
+.card{
+  border:1px solid rgba(23,99,63,.08);
+  box-shadow:0 12px 35px rgba(22,70,50,.09);
+}
+#start{
+  overflow:hidden;
+  position:relative;
+  padding:0 24px 28px;
+}
+#start:before{
+  content:"";
+  display:block;
+  height:115px;
+  margin:0 -24px 22px;
+  background:
+    radial-gradient(circle at 18% 55%, rgba(255,255,255,.35) 0 5px, transparent 6px),
+    radial-gradient(circle at 35% 35%, rgba(255,255,255,.25) 0 4px, transparent 5px),
+    radial-gradient(circle at 70% 62%, rgba(255,255,255,.28) 0 5px, transparent 6px),
+    linear-gradient(135deg,#145d3b,#23875b 55%,#2f9a6b);
+}
+#start:after{
+  content:"☢";
+  position:absolute;
+  top:25px;
+  left:28px;
+  color:rgba(255,255,255,.18);
+  font-size:74px;
+}
+#start .badge:first-child{background:#e1f3e8}
+h1{font-size:29px;line-height:1.5;margin-bottom:10px}
+.intro{font-size:16px;max-width:720px;margin:0 auto 12px}
+.next{
+  box-shadow:0 6px 16px rgba(23,99,63,.22);
+  font-weight:bold;
+}
+.option{
+  position:relative;
+  overflow:hidden;
+  min-height:54px;
+}
+.option:active{transform:scale(.99)}
+.option.correct:before,.option.wrong:before{
+  content:"";
+  position:absolute;right:0;top:0;bottom:0;width:5px;
+}
+.option.correct:before{background:#2d9a62}
+.option.wrong:before{background:#c94d4d}
+.feedback{font-size:15px}
+#result{
+  background:linear-gradient(180deg,#ffffff,#f5fbf7);
+}
+.score{
+  font-size:50px;
+  letter-spacing:1px;
+}
+.level{
+  display:inline-block;
+  background:#e7f5ed;
+  color:#17633f;
+  padding:6px 18px;
+  border-radius:999px;
+}
+.meter{height:20px}
+.sources{background:#fbfdfc}
+@media(max-width:600px){
+  #start{padding:0 16px 22px}
+  #start:before{margin:0 -16px 18px;height:92px}
+  h1{font-size:22px}
+  .intro{font-size:14px}
+}
+</style>
+
+
+<style>
+#register input{
+  display:block;width:100%;padding:13px 14px;margin:7px 0 15px;
+  border:2px solid #e1e8e5;border-radius:13px;font-family:inherit;font-size:16px;
+  outline:none;
+}
+#register input:focus{border-color:#4b9b75}
+#register label{font-weight:bold}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+
+  <div class="card" id="start" style="display:none">
+    <div style="text-align:center">
+      <span class="badge">۲۰ سؤال چهارگزینه‌ای</span>
+      <span class="badge">بازخورد آموزشی فوری</span>
+      <span class="badge">قرعه‌کشی ویژه</span>
+    </div>
+    <h1>مسابقه دستاوردهای علمی و فناوری ایران</h1>
+    <p class="intro">
+      این آزمون برای آشنایی شما با دستاوردهای واقعی ایران در فناوری هسته‌ای طراحی شده است. در هر سؤال، چه پاسخ درست بدهید و چه اشتباه،
+      توضیح آموزشی درباره کاربرد یا دستاورد موردنظر نمایش داده می‌شود تا در پایان فقط نمره نگیرید، بلکه چیزهای بیشتری یاد بگیرید.
+    </p>
+    <p class="small">
+      مبنای طراحی: محورهای فایل ارسالی شما درباره کاربردها و دستاوردهای فناوری هسته‌ای،
+      همراه با راستی‌آزمایی اطلاعات فنی با منابع رسمی آژانس بین‌المللی انرژی اتمی (IAEA).
+    </p>
+    <button class="next" style="display:inline-block" onclick="startQuiz()">🚀 شروع آزمون</button>
+  </div>
+
+
+  <div class="card" id="register">
+    <div style="text-align:center">
+      <span class="badge">مسابقه علمی</span>
+      <span class="badge">۲۰ سؤال</span>
+      <span class="badge">شرط قرعه‌کشی: بیش از ۱۵</span>
+    </div>
+    <h1>ثبت‌نام در مسابقه</h1>
+    <p class="intro">برای ثبت شرکت در مسابقه، نام و شماره تلفن خود را وارد کنید. اطلاعات برای ثبت شرکت و قرعه‌کشی نزد برگزارکننده نگهداری می‌شود.</p>
+    <label>نام و نام خانوادگی</label>
+    <input id="participantName" type="text" maxlength="80" placeholder="مثلاً حلیمه رضایی">
+    <label>شماره تلفن همراه</label>
+    <input id="participantPhone" type="tel" inputmode="tel" maxlength="15" placeholder="مثلاً 09123456789">
+    <div id="regError" style="display:none;color:#b33;margin:10px 0"></div>
+    <button class="next" style="display:inline-block" onclick="registerAndStart()">شروع مسابقه 🚀</button>
+    <p class="small">شماره تلفن برای عموم نمایش داده نمی‌شود و فقط در جدول برگزارکننده ثبت خواهد شد.</p>
+  </div>
+
+  <div class="card hidden" id="quiz">
+    <div>
+      <span id="counter" class="badge">سؤال ۱ از ۲۰</span>
+      <span id="scoreLive" class="badge">امتیاز: ۰</span>
+    </div>
+    <div class="progress"><div class="bar" id="bar"></div></div>
+    <div class="question-title" id="q"></div>
+    <div id="options"></div>
+    <div id="feedback" class="feedback"></div>
+    <button id="nextBtn" class="next" onclick="nextQuestion()">سؤال بعدی ←</button>
+  </div>
+
+  <div class="card hidden scorebox" id="result">
+    <h2>نتیجه آزمون شما</h2>
+    <div class="score" id="finalScore"></div>
+    <div class="meter"><span id="meter"></span></div>
+    <div class="level" id="level"></div>
+    <p id="message"></p>
+    <div class="card" style="background:#f7faf8;text-align:right">
+      <h3>حالا چه چیزهایی را مرور کردید؟</h3>
+      <ul>
+        <li>تولید برق در نیروگاه هسته‌ای بوشهر</li>
+        <li>پزشکی هسته‌ای و تولید رادیوداروها</li>
+        <li>کمک به تشخیص و درمان برخی سرطان‌ها</li>
+        <li>اصلاح نباتات و بهبود برخی ویژگی‌های محصولات کشاورزی</li>
+        <li>کاربردهای هسته‌ای و پرتویی در صنعت</li>
+        <li>مطالعات آب، خاک و محیط‌زیست</li>
+        <li>راکتورهای تحقیقاتی، شتاب‌دهنده‌ها و زیرساخت علمی</li>
+      </ul>
+    </div>
+    <button class="restart" onclick="restartQuiz()">تکرار آزمون</button>
+  </div>
+
+  <div class="card sources">
+    <h3>منابع و توضیح</h3>
+    <p>
+      این آزمون برای آموزش عمومی طراحی شده و ادعاهای فنی آن بر پایه منابع رسمی و علمی
+      تنظیم شده‌اند. در مواردی که منبع فقط «کاربرد/پروژه/پیشرفت» را گزارش می‌کند،
+      متن سؤال نیز با همین احتیاط نوشته شده و از ادعاهای اغراق‌آمیز پرهیز شده است.
+    </p>
+    <ul>
+      <li><a href="https://www.iaea.org/sites/default/files/20/10/tc-iran.pdf" target="_blank">IAEA – Islamic Republic of Iran: Selected achievements</a></li>
+      <li><a href="https://pris.iaea.org/pris/CountryStatistics/CountryDetails.aspx?current=IR" target="_blank">IAEA PRIS – وضعیت نیروگاه‌های هسته‌ای ایران</a></li>
+      <li><a href="https://pris.iaea.org/PRIS/CountryStatistics/ReactorDetails.aspx?current=310" target="_blank">IAEA PRIS – Bushehr-1</a></li>
+      <li><a href="https://www-pub.iaea.org/MTCD/Publications/PDF/Newsletters/pbg-48.pdf" target="_blank">FAO/IAEA – Plant Breeding & Genetics Newsletter: Iran</a></li>
+      <li><a href="https://conferences.iaea.org/event/145/contributions/4862/" target="_blank">IAEA – بهبود ارقام برنج ایران با روش جهش‌زایی</a></li>
+    
+      <li><a href="https://nano.ir/fa/2" target="_blank">ستاد توسعه فناوری نانو – اسناد و گزارش‌های توسعه نانو در ایران</a></li>
+      <li><a href="https://nano.ir/fa/174" target="_blank">ستاد توسعه فناوری نانو – محصولات و تجهیزات نانو ساخت ایران</a></li>
+      <li><a href="https://www.who.int/emro" target="_blank">WHO EMRO – اطلاعات تولید و نظام واکسن در ایران</a></li>
+      <li><a href="https://pubmed.ncbi.nlm.nih.gov/31718464/" target="_blank">PubMed – مرور پیشرفت پزشکی بازساختی و سلول بنیادی در ایران</a></li>
+      <li><a href="https://www.unoosa.org/documents/pdf/copuos/stsc/2023/Statements/3_Iran_6_Feb_PM.pdf" target="_blank">UNOOSA – بیانیه ایران درباره فعالیت‌های فضایی و نور-۲/خیام</a></li>
+</ul>
+    <p class="small">برای استفاده آفلاین، فایل به صورت خودکفا ساخته شده و به اینترنت برای اجرای آزمون نیاز ندارد؛ فقط لینک‌های منابع برای مشاهده منبع اصلی به اینترنت نیاز دارند.</p>
+  </div>
+</div>
+
+<script>
+const questions = [
+  {
+    "q": "کدام مورد یکی از مهم‌ترین دستاوردهای ایران در حوزه انرژی هسته‌ای است؟",
+    "opts": [
+      "تولید برق در نیروگاه هسته‌ای",
+      "تولید بنزین خودرو",
+      "استخراج زغال‌سنگ",
+      "تولید گاز طبیعی"
+    ],
+    "a": 0,
+    "ex": "پاسخ درست است. ایران با بهره‌برداری تجاری از واحد نخست نیروگاه بوشهر وارد مرحله تولید برق هسته‌ای شد. طبق پروفایل ۲۰۲۴ آژانس بین‌المللی انرژی اتمی، بوشهر-۱ تنها راکتور هسته‌ای عملیاتی ایران در آن گزارش بوده و در سال ۲۰۱۳ به بهره‌برداری تجاری رسیده است."
+  },
+  {
+    "q": "کدام گزینه درباره نیروگاه بوشهر-۱ درست است؟",
+    "opts": [
+      "یک نیروگاه خورشیدی با ظرفیت ۹۱۵ مگاوات است",
+      "یک راکتور آب فشرده هسته‌ای با ظرفیت خالص مرجع ۹۱۵ مگاوات است",
+      "یک نیروگاه بادی با ظرفیت ۱۰۰۰ مگاوات است",
+      "یک راکتور تحقیقاتی کوچک برای تولید رادیودارو است"
+    ],
+    "a": 1,
+    "ex": "پاسخ درست است. پایگاه PRIS آژانس، بوشهر-۱ را راکتور آب فشرده (PWR) با ظرفیت خالص مرجع ۹۱۵ مگاوات ثبت کرده است. این واحد یکی از نمونه‌های کاربرد فناوری هسته‌ای ایران در تولید برق است."
+  },
+  {
+    "q": "فناوری هسته‌ای در پزشکی ایران چه کاربرد مهمی پیدا کرده است؟",
+    "opts": [
+      "تولید سوخت خودرو",
+      "ساخت تلفن همراه",
+      "توسعه و تولید برخی رادیوداروها برای کاربردهای پزشکی",
+      "استخراج آب از نفت"
+    ],
+    "a": 2,
+    "ex": "پاسخ درست است. آژانس بین‌المللی انرژی اتمی گزارش کرده که ایران با توسعه ظرفیت‌های داخلی، در تولید برخی محصولات رادیوایزوتوپی و رادیوداروها برای کاربردهای پزشکی، از جمله درمان برخی سرطان‌ها، به خودکفایی بیشتری رسیده است."
+  },
+  {
+    "q": "رادیوداروها در پزشکی هسته‌ای چه نقشی دارند؟",
+    "opts": [
+      "فقط برای تولید برق استفاده می‌شوند",
+      "برای برخی کاربردهای تشخیصی و درمانی، از جمله در سرطان، به کار می‌روند",
+      "برای ساخت سیمان استفاده می‌شوند",
+      "فقط در کشاورزی کاربرد دارند"
+    ],
+    "a": 1,
+    "ex": "پاسخ درست است. رادیوداروها بسته به نوع خود می‌توانند برای تصویربرداری و تشخیص یا رساندن پرتو به بافت هدف در درمان برخی بیماری‌ها استفاده شوند. IAEA به تولید و توسعه رادیوداروهای مورد استفاده در درمان برخی سرطان‌ها در ایران اشاره کرده است."
+  },
+  {
+    "q": "یکی از زمینه‌هایی که ایران در آن از فناوری هسته‌ای برای کشاورزی استفاده کرده، کدام است؟",
+    "opts": [
+      "تولید تراکتور",
+      "اصلاح نباتات با ایجاد و انتخاب جهش‌های مفید",
+      "ساخت گلخانه با انرژی خورشیدی",
+      "استخراج نفت از خاک"
+    ],
+    "a": 1,
+    "ex": "پاسخ درست است. در ایران از جهش‌زایی القایی با پرتو گاما در اصلاح نباتات استفاده شده است؛ پژوهشگران با ایجاد تنوع ژنتیکی و سپس انتخاب گیاهان مناسب، به دنبال صفاتی مانند تحمل شوری، زودرسی یا عملکرد بهتر بوده‌اند."
+  },
+  {
+    "q": "فناوری هسته‌ای چگونه می‌تواند در مدیریت آب و خاک کمک‌کننده باشد؟",
+    "opts": [
+      "با تبدیل خاک به سوخت",
+      "با استفاده از روش‌های ایزوتوپی برای مطالعه و مدیریت آب و خاک",
+      "با حذف کامل بارندگی",
+      "با تبدیل آب شور به نفت"
+    ],
+    "a": 1,
+    "ex": "پاسخ درست است. روش‌های ایزوتوپی می‌توانند برای شناخت حرکت و منشأ آب، فرسایش خاک و نحوه مصرف آب و مواد غذایی در کشاورزی به کار روند. IAEA نیز مدیریت آب و خاک را از حوزه‌های همکاری و کاربرد فناوری هسته‌ای در ایران معرفی کرده است."
+  },
+  {
+    "q": "یکی از کاربردهای فناوری پرتویی در صنعت چیست؟",
+    "opts": [
+      "آزمون و بررسی مواد و قطعات بدون تخریب آن‌ها",
+      "پخت نان در خانه",
+      "تولید بنزین",
+      "تولید سیمان بدون مواد اولیه"
+    ],
+    "a": 0,
+    "ex": "پاسخ درست است. روش‌های پرتویی و آزمون‌های غیرمخرب در صنعت برای بررسی مواد و قطعات و شناسایی برخی عیوب بدون تخریب نمونه استفاده می‌شوند. IAEA کاربردهای صنعتی فناوری هسته‌ای را در کنار پزشکی، کشاورزی و انرژی از حوزه‌های مهم می‌داند."
+  },
+  {
+    "q": "کدام مورد در گزارش رسمی IAEA درباره دستاوردهای ایران در حوزه سلامت آمده است؟",
+    "opts": [
+      "افزایش توان تولید برخی محصولات رادیوایزوتوپی برای درمان سرطان",
+      "تولید واکسن‌های معمولی با راکتور",
+      "ساخت تمام تجهیزات بیمارستانی",
+      "تولید داروهای گیاهی"
+    ],
+    "a": 0,
+    "ex": "پاسخ درست است. در گزارش اخیر IAEA درباره ایران، افزایش خودکفایی در تولید محصولات رادیوایزوتوپی با کاربرد درمانی، از جمله برای سرطان‌های پروستات، چشم و مغز، به‌عنوان یکی از موفقیت‌های پروژه‌های همکاری فنی ذکر شده است."
+  },
+  {
+    "q": "کدام گزینه بهتر نشان می‌دهد که فناوری هسته‌ای فقط به تولید برق محدود نیست؟",
+    "opts": [
+      "چون فقط در نیروگاه‌ها استفاده می‌شود",
+      "چون در پزشکی، کشاورزی، صنعت، آب و محیط‌زیست نیز کاربرد دارد",
+      "چون فقط برای تحقیقات دانشگاهی است",
+      "چون فقط برای تولید سوخت استفاده می‌شود"
+    ],
+    "a": 1,
+    "ex": "پاسخ درست است. در منابع IAEA برای ایران، علاوه بر انرژی هسته‌ای، حوزه‌هایی مانند سلامت، غذا و کشاورزی، آب و محیط‌زیست و کاربردهای صنعتی نیز به‌عنوان حوزه‌های کاربرد و همکاری هسته‌ای معرفی شده‌اند."
+  },
+  {
+    "q": "کدام گزینه مجموعه‌ای از کاربردهای فناوری هسته‌ای در ایران را درست بیان می‌کند؟",
+    "opts": [
+      "فقط تولید برق",
+      "فقط پزشکی",
+      "انرژی، پزشکی، کشاورزی، آب و محیط‌زیست و صنعت",
+      "فقط کشاورزی"
+    ],
+    "a": 2,
+    "ex": "پاسخ درست است. هدف اصلی این بخش از مسابقه این است که فناوری هسته‌ای را فراتر از نیروگاه بشناسیم: تولید برق، رادیودارو و پزشکی هسته‌ای، اصلاح نباتات، مدیریت آب و خاک، محیط‌زیست و کاربردهای صنعتی از جمله حوزه‌های مستند هستند."
+  },
+  {
+    "q": "کدام حوزه یکی از زمینه‌های مهم پیشرفت علمی ایران در دهه‌های اخیر بوده و در ایران زیرساخت پژوهشی و بالینی پیدا کرده است؟",
+    "opts": [
+      "سلول‌های بنیادی و پزشکی بازساختی",
+      "استخراج الماس از دریا",
+      "تولید موتور بخار",
+      "ساخت کشتی‌های چوبی"
+    ],
+    "a": 0,
+    "ex": "پاسخ درست است. مرورهای علمی منتشرشده در PubMed رشد پژوهش و کاربردهای پزشکی بازساختی و سلول‌های بنیادی در مراکز دانشگاهی و درمانی ایران را مستند کرده‌اند. این حوزه شامل پژوهش‌های سلولی، مهندسی بافت و برخی درمان‌های سلولی است؛ البته همه یافته‌های پژوهشی به معنی درمان قطعی یا عمومی برای همه بیماری‌ها نیستند."
+  },
+  {
+    "q": "یکی از زمینه‌های شناخته‌شده پیشرفت فناوری نانو در ایران کدام است؟",
+    "opts": [
+      "فقط تولید وسایل خانگی",
+      "تولید محصولات و تجهیزات نانویی برای کاربردهای صنعتی و پزشکی",
+      "فقط ساخت هواپیما",
+      "تولید زغال‌سنگ نانویی"
+    ],
+    "a": 1,
+    "ex": "پاسخ درست است. ستاد توسعه فناوری نانو ایران مجموعه‌ای از محصولات و تجهیزات نانومقیاس ساخت ایران را در حوزه‌هایی مانند آب و فاضلاب، پزشکی، ساختمان، نساجی، خودرو، انرژی و محیط‌زیست معرفی و گزارش‌های بازار و صادرات آن‌ها را منتشر کرده است."
+  },
+  {
+    "q": "کدام نمونه از کاربرد فناوری نانو در ایران در منابع رسمی ستاد نانو گزارش شده است؟",
+    "opts": [
+      "تصفیه آب با نانوفیلتراسیون",
+      "تبدیل آب به بنزین",
+      "تولید برق از شن",
+      "ساخت هواپیمای چوبی"
+    ],
+    "a": 0,
+    "ex": "پاسخ درست است. ستاد توسعه فناوری نانو ایران نمونه‌هایی از سامانه‌های تصفیه آب با نانوفیلتراسیون را گزارش کرده است. این فناوری با استفاده از غشاهای بسیار ریز می‌تواند برای جداسازی برخی آلاینده‌ها و مواد از آب به کار رود."
+  },
+  {
+    "q": "کدام مورد درباره تولید واکسن در ایران پشتوانه مستند سازمان جهانی بهداشت دارد؟",
+    "opts": [
+      "تمام واکسن‌های جهان در ایران ساخته می‌شوند",
+      "بخش مهمی از نیاز واکسنی کشور از تولید داخلی تأمین شده است",
+      "ایران هیچ سابقه تولید واکسن ندارد",
+      "واکسن فقط در آزمایشگاه‌های هسته‌ای تولید می‌شود"
+    ],
+    "a": 1,
+    "ex": "پاسخ درست است. دفتر منطقه‌ای سازمان جهانی بهداشت گزارش کرده که نیازهای واکسنی ایران عمدتاً از تولید داخلی دو تولیدکننده اصلی، یعنی مؤسسه پاستور ایران و مؤسسه تحقیقات واکسن و سرم‌سازی رازی، تأمین شده است. این یک نمونه از توسعه ظرفیت زیست‌پزشکی کشور است."
+  },
+  {
+    "q": "ماهواره خیام که در سال ۲۰۲۲ در مدار قرار گرفت، از چه نوع ماهواره‌ای است؟",
+    "opts": [
+      "ماهواره رصد زمین",
+      "ماهواره ارتباطی برای تلفن همراه",
+      "ماهواره هواشناسی اختصاصی",
+      "ماهواره نجومی برای مطالعه سیاهچاله‌ها"
+    ],
+    "a": 0,
+    "ex": "پاسخ درست است. داده ثبت‌شده در دفتر امور فضای ماورای جو سازمان ملل (UNOOSA) خیام را یک ماهواره مشاهده زمین معرفی می‌کند. ایران اعلام کرده داده‌های آن برای کشاورزی، مدیریت منابع آب، محیط‌زیست، بلایای طبیعی، معدن و برنامه‌ریزی سرزمینی کاربرد دارد."
+  },
+  {
+    "q": "طبق ثبت سازمان ملل، ماهواره خیام چه نوع داده‌ای تولید می‌کند؟",
+    "opts": [
+      "داده‌های مشاهده و تصویربرداری از زمین",
+      "فقط تماس صوتی",
+      "فقط پخش تلویزیونی",
+      "فقط داده‌های پزشکی"
+    ],
+    "a": 0,
+    "ex": "پاسخ درست است. UNOOSA عملکرد عمومی خیام را «Earth observation» ثبت کرده است. داده‌های سنجش از دور ماهواره‌ای می‌توانند برای پایش پوشش گیاهی، منابع آب، تغییرات زمین و مدیریت بحران به کار روند."
+  },
+  {
+    "q": "یکی از پیشرفت‌های علمی ایران در حوزه پزشکی بازساختی چیست؟",
+    "opts": [
+      "ایجاد مراکز پژوهشی و بالینی مرتبط با سلول‌های بنیادی و مهندسی بافت",
+      "حذف کامل همه بیماری‌ها",
+      "تولید همه اعضای بدن در کارخانه",
+      "بی‌نیازی کامل از جراحی"
+    ],
+    "a": 0,
+    "ex": "پاسخ درست است. مرورهای علمی درباره ایران، شکل‌گیری مراکز تخصصی سلول بنیادی، مهندسی بافت و پزشکی بازساختی و انتقال بخشی از پژوهش‌ها به مطالعات و کاربردهای بالینی را گزارش کرده‌اند. این حوزه همچنان در حال توسعه است و نباید ادعاهای قطعی فراتر از شواهد علمی مطرح کرد."
+  },
+  {
+    "q": "در برنامه توسعه فناوری نانو ایران، کدام هدف دنبال شده است؟",
+    "opts": [
+      "تجاری‌سازی فناوری و تولید محصولات نانویی",
+      "توقف پژوهش دانشگاهی",
+      "حذف شرکت‌های دانش‌بنیان",
+      "محدود کردن نانو به آزمایشگاه"
+    ],
+    "a": 0,
+    "ex": "پاسخ درست است. اسناد رسمی ستاد توسعه نانو، تجاری‌سازی فناوری، صنعتی‌سازی و تولید محصولات نانو، بازاریابی بین‌المللی و صادرات را از رویکردهای اصلی برنامه توسعه نانو در ایران معرفی کرده‌اند."
+  },
+  {
+    "q": "کدام ماهواره ایرانی در مارس ۲۰۲۲ با ماهواره‌بر قاصد به مدار ۵۰۰ کیلومتری فرستاده شد؟",
+    "opts": [
+      "نور-۲",
+      "خیام",
+      "پارس-۱",
+      "ناهید"
+    ],
+    "a": 0,
+    "ex": "پاسخ درست است. در بیانیه رسمی ایران در سازمان ملل درباره فعالیت‌های فضایی، پرتاب ماهواره سنجش از دور نور-۲ به مدار حدود ۵۰۰ کیلومتری با ماهواره‌بر سه‌مرحله‌ای قاصد در ۸ مارس ۲۰۲۲ ثبت شده است."
+  },
+  {
+    "q": "کدام گزینه بهترین جمع‌بندی از برخی پیشرفت‌های غیرهسته‌ای ایران است؟",
+    "opts": [
+      "فقط پیشرفت در یک رشته علمی",
+      "پیشرفت در حوزه‌هایی مانند نانو، سلول‌های بنیادی و پزشکی بازساختی، واکسن و فناوری فضایی",
+      "فقط پیشرفت در صنایع سنتی",
+      "فقط پیشرفت در ورزش"
+    ],
+    "a": 1,
+    "ex": "پاسخ درست است. منابع علمی و رسمی، فعالیت و توسعه ایران را در حوزه‌هایی مانند فناوری نانو، سلول‌های بنیادی و پزشکی بازساختی، تولید واکسن و فناوری فضایی مستند کرده‌اند. این سؤال برای دیدن تصویر کلی از تنوع پیشرفت‌های علمی و فناورانه کشور طراحی شده است."
+  }
+];
+
+let index=0, score=0, answered=false, participant={name:'',phone:''};
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyukp7k_Us--7TYDKuwAHKcsuH_XX7db452wMvL9jO-09tHNRGSfNKZXNcWRjnzRQEIfw/exec';
+
+function registerAndStart(){
+  const name=document.getElementById('participantName').value.trim();
+  const phone=document.getElementById('participantPhone').value.trim().replace(/\s+/g,'');
+  const err=document.getElementById('regError');
+  if(name.length<2){err.textContent='لطفاً نام و نام خانوادگی را وارد کنید.';err.style.display='block';return;}
+  if(!/^09\d{9}$/.test(phone)){err.textContent='لطفاً شماره موبایل ۱۱ رقمی با 09 وارد کنید.';err.style.display='block';return;}
+  participant={name,phone};
+  err.style.display='none';
+  document.getElementById('register').classList.add('hidden');
+  document.getElementById('quiz').classList.remove('hidden');
+  index=0;score=0;render();
+}
+function render(){
+  answered=false;
+  const item=questions[index];
+  document.getElementById('counter').textContent=`سؤال ${index+1} از ${questions.length}`;
+  document.getElementById('scoreLive').textContent=`امتیاز: ${score}`;
+  document.getElementById('bar').style.width=((index)/questions.length*100)+'%';
+  document.getElementById('q').textContent=item.q;
+  const box=document.getElementById('options'); box.innerHTML='';
+  item.opts.forEach((text,i)=>{
+    const b=document.createElement('button');
+    b.className='option';
+    b.innerHTML=`<span class="letter">${['الف','ب','ج','د'][i]})</span>${text}`;
+    b.onclick=()=>answer(i);
+    box.appendChild(b);
+  });
+  document.getElementById('feedback').style.display='none';
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('nextBtn').style.display='none';
+}
+function answer(choice){
+  if(answered)return;
+  answered=true;
+  const item=questions[index];
+  const buttons=[...document.querySelectorAll('.option')];
+  buttons.forEach((b,i)=>{
+    b.classList.add('disabled');
+    if(i===item.a)b.classList.add('correct');
+    if(i===choice && choice!==item.a)b.classList.add('wrong');
+  });
+  const fb=document.getElementById('feedback');
+  if(choice===item.a){
+    score++;
+    fb.className='feedback';
+    fb.innerHTML=`<strong>🟢 آفرین! پاسخ شما درست است.</strong>
+      <div>${item.explain}</div>`;
+  }else{
+    fb.className='feedback wrong';
+    fb.innerHTML=`<strong>🔴 پاسخ شما درست نبود.</strong>
+      <div>پاسخ صحیح: <b>${['الف','ب','ج','د'][item.a]}) ${item.opts[item.a]}</b></div>
+      <div style="margin-top:7px">${item.explain}</div>`;
+  }
+  fb.style.display='block';
+  document.getElementById('scoreLive').textContent=`امتیاز: ${score}`;
+  document.getElementById('nextBtn').style.display='inline-block';
+  document.getElementById('nextBtn').textContent=index===questions.length-1?'مشاهده نتیجه نهایی':'سؤال بعدی ←';
+}
+function nextQuestion(){
+  if(!answered)return;
+  index++;
+  if(index>=questions.length){showResult();return;}
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function showResult(){
+  document.getElementById('quiz').classList.add('hidden');
+  document.getElementById('result').classList.remove('hidden');
+  submitResult();
+  const pct=Math.round(score/questions.length*100);
+  document.getElementById('finalScore').textContent=`${score} از ${questions.length}`;
+  document.getElementById('meter').style.width=pct+'%';
+  let level,msg;
+  if(score<=5){
+    level='🔴 آگاهی کم';
+    msg='هنوز با بخش زیادی از کاربردها و دستاوردهای فناوری هسته‌ای ایران آشنا نشده‌اید. توضیحات سؤال‌ها را دوباره مرور کنید.';
+  }else if(score<=10){
+    level='🟠 آگاهی متوسط';
+    msg='با بعضی از کاربردها آشنا هستید، اما چند حوزه مهم مانند پزشکی، کشاورزی، آب و صنعت نیاز به مرور بیشتری دارد.';
+  }else if(score<=15){
+    level='🟡 آگاهی خوب';
+    msg='شناخت خوبی از کاربردها و دستاوردهای فناوری هسته‌ای ایران دارید. با مرور توضیحات می‌توانید شناخت دقیق‌تری پیدا کنید.';
+  }else if(score<=18){
+    level='🟢 آگاهی خیلی خوب';
+    msg='تبریک! شما با بخش بزرگی از دستاوردها و کاربردهای فناوری هسته‌ای ایران آشنا هستید.';
+  }else{
+    level='🏆 آگاهی عالی';
+    msg='عالی! شما شناخت بسیار خوبی از دستاوردهای ایران در فناوری هسته‌ای و کاربردهای آن در زندگی مردم دارید.';
+  }
+  document.getElementById('level').textContent=level;
+  document.getElementById('message').textContent=msg;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+async function submitResult(){
+  const pct=Math.round(score/questions.length*100);
+  const payload={
+    name:participant.name,
+    phone:participant.phone,
+    score:score,
+    total:questions.length,
+    percent:pct,
+    eligible:score>15,
+    submittedAt:new Date().toISOString()
+  };
+  if(!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes('YOUR_APPS_SCRIPT')){
+    document.getElementById('message').textContent += ' (ثبت آنلاین هنوز به Google Sheet متصل نشده است.)';
+    return;
+  }
+  try{
+    await fetch(APPS_SCRIPT_URL,{
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify(payload)
+    });
+  }catch(e){
+    document.getElementById('message').textContent += ' ثبت آنلاین انجام نشد؛ لطفاً اتصال مسابقه بررسی شود.';
+  }
+}
+
+function restartQuiz(){
+  document.getElementById('result').classList.add('hidden');
+  document.getElementById('quiz').classList.remove('hidden');
+  index=0;score=0;render();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
